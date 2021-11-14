@@ -1,0 +1,1235 @@
+{
+	"info": {
+		"_postman_id": "d24208d1-0128-465d-b88d-91c182646e8b",
+		"name": "WebApi",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var response = pm.response.json();\r",
+							"var token = response.tokenId;\r",
+							"pm.collectionVariables.set(\"authorization\", 'iam ' + token);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "12345",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "postman-automated-tests@emanagecrm.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{host-iam}}auth/login/eManageCRM-test",
+					"host": [
+						"{{host-iam}}auth"
+					],
+					"path": [
+						"login",
+						"eManageCRM-test"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get products List",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}products/1/10/date desc/",
+					"host": [
+						"{{host-webapi}}products"
+					],
+					"path": [
+						"1",
+						"10",
+						"date desc",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get products info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Products Info\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}/products/{{productId}}/info",
+					"host": [
+						"{{host-webapi}}"
+					],
+					"path": [
+						"products",
+						"{{productId}}",
+						"info"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Customer Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}/customers/{{customerId}}/details",
+					"host": [
+						"{{host-webapi}}"
+					],
+					"path": [
+						"customers",
+						"{{customerId}}",
+						"details"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Customer list",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Customer Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}/customers/1/10?CustomerEmail=waltherjoachimwa@web.de",
+					"host": [
+						"{{host-webapi}}"
+					],
+					"path": [
+						"customers",
+						"1",
+						"10"
+					],
+					"query": [
+						{
+							"key": "CustomerEmail",
+							"value": "waltherjoachimwa@web.de"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get address history",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Address History\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}/masterorder/get-address-history/{{addressId}}",
+					"host": [
+						"{{host-webapi}}"
+					],
+					"path": [
+						"masterorder",
+						"get-address-history",
+						"{{addressId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Current or Next Prn",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Current or Next PRN\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "iam-basic 6031F686-6C8F-42B2-B594-05340F2E6B37",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "584EA331-0CD2-4C48-85D9-737F9DDDFA0B",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}/mids/loadbalance/currentornextprn/{{orderId}}",
+					"host": [
+						"{{host-webapi}}"
+					],
+					"path": [
+						"mids",
+						"loadbalance",
+						"currentornextprn",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Order Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Order Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"var order = pm.response.json();\r",
+							"\r",
+							"console.log('customerId', order.customerId);\r",
+							"console.log('productId', order.product.id);\r",
+							"console.log('addressId', order.addressId);\r",
+							"console.log('transactionId', order.receipts[0].transactionId);\r",
+							"\r",
+							"pm.collectionVariables.set('customerId', order.customerId);\r",
+							"pm.collectionVariables.set('productId', order.product.id);\r",
+							"pm.collectionVariables.set('addressId', order.addressid);\r",
+							"pm.collectionVariables.set('addressId', order.receipts[0].transactionId);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}orders/{{orderId}}/beta",
+					"host": [
+						"{{host-webapi}}orders"
+					],
+					"path": [
+						"{{orderId}}",
+						"beta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Master Order Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Master Order Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var order = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set('masterOrderId', 'M' + order.masterOrderId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}masterorder/get-master-order-detail/{{orderId}}",
+					"host": [
+						"{{host-webapi}}masterorder"
+					],
+					"path": [
+						"get-master-order-detail",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Master Order Address",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Master Order Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}masterorder/get-address/{{addressId}}",
+					"host": [
+						"{{host-webapi}}masterorder"
+					],
+					"path": [
+						"get-address",
+						"{{addressId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Master Order Customer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Master Order Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}masterorder/get-customer/{{customerId}}",
+					"host": [
+						"{{host-webapi}}masterorder"
+					],
+					"path": [
+						"get-customer",
+						"{{customerId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Master Order Payments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Master Order Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}masterorder/get-payments/{{masterOrderId}}",
+					"host": [
+						"{{host-webapi}}masterorder"
+					],
+					"path": [
+						"get-payments",
+						"{{masterOrderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Master Order Shipments",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Master Order Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}masterorder/get-shippments/{{masterOrderId}}",
+					"host": [
+						"{{host-webapi}}masterorder"
+					],
+					"path": [
+						"get-shippments",
+						"{{masterOrderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Master Order Notes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Master Order Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}masterorder/get-order-notes/{{orderId}}",
+					"host": [
+						"{{host-webapi}}masterorder"
+					],
+					"path": [
+						"get-order-notes",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Master Order SalesWorkflow",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Master Order Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}masterorder/get-order-workflow/{{orderId}}",
+					"host": [
+						"{{host-webapi}}masterorder"
+					],
+					"path": [
+						"get-order-workflow",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Campaign Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Campaign Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}campaigns/{{campaignId}}/beta",
+					"host": [
+						"{{host-webapi}}campaigns"
+					],
+					"path": [
+						"{{campaignId}}",
+						"beta"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Shopping Cart Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Shopping Cart Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}shoppingcart/{{shoppingCartId}}",
+					"host": [
+						"{{host-webapi}}shoppingcart"
+					],
+					"path": [
+						"{{shoppingCartId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Prn by MidCode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Shopping Cart Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "iam 66b90db4-23da-4f73-b86a-ac29f515aa68",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}mids/{{midCode}}/prn",
+					"host": [
+						"{{host-webapi}}mids"
+					],
+					"path": [
+						"{{midCode}}",
+						"prn"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Sales Model Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Sales Model Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}campaigns/salesworkflows/{{salesModelId}}",
+					"host": [
+						"{{host-webapi}}campaigns"
+					],
+					"path": [
+						"salesworkflows",
+						"{{salesModelId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Provider",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Provider Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}payments/providers/{{providerId}}",
+					"host": [
+						"{{host-webapi}}payments"
+					],
+					"path": [
+						"providers",
+						"{{providerId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Warehouse Details",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Warehouse Details\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}warehouses/{{warehouseId}}/with-amazon",
+					"host": [
+						"{{host-webapi}}warehouses"
+					],
+					"path": [
+						"{{warehouseId}}",
+						"with-amazon"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Shipping Methods",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Shipping Methods\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}shippings/{{shippingId}}",
+					"host": [
+						"{{host-webapi}}shippings"
+					],
+					"path": [
+						"{{shippingId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Coupon",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Coupon\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}coupons/{{couponId}}",
+					"host": [
+						"{{host-webapi}}coupons"
+					],
+					"path": [
+						"{{couponId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Gift Cards",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get GiftCard\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}giftcards/{{giftCardId}}/transactions",
+					"host": [
+						"{{host-webapi}}giftcards"
+					],
+					"path": [
+						"{{giftCardId}}",
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Email Template",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Email Template\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "{{authorization}}",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "{{X_CID}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}emailtemplates/{{emailTemplateId}}",
+					"host": [
+						"{{host-webapi}}emailtemplates"
+					],
+					"path": [
+						"{{emailTemplateId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refund",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Refund\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "iam 9168c5d3-1129-432a-89c4-c799186fbc4c",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "584ea331-0cd2-4c48-85d9-737f9dddfa0b",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{host-webapi}}orders/{{orderId}}/refund/?transactionId={{transactionId}}&amount=193.94&reason=Threatening%20with%20Lawyer&reasonId=4&isManuallyRefund=false",
+					"host": [
+						"{{host-webapi}}orders"
+					],
+					"path": [
+						"{{orderId}}",
+						"refund",
+						""
+					],
+					"query": [
+						{
+							"key": "transactionId",
+							"value": "{{transactionId}}"
+						},
+						{
+							"key": "amount",
+							"value": "193.94"
+						},
+						{
+							"key": "reason",
+							"value": "Threatening%20with%20Lawyer"
+						},
+						{
+							"key": "reasonId",
+							"value": "4"
+						},
+						{
+							"key": "isManuallyRefund",
+							"value": "false"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reship with charge",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Get Refund\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "iam c6e9acfc-4afc-43af-9ca7-d83b3c5e71bf",
+						"type": "text"
+					},
+					{
+						"key": "X_CID",
+						"value": "584ea331-0cd2-4c48-85d9-737f9dddfa0b",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"ProductId\":3009,\r\n    \"ReshipmentReasonCodeId\":\"8\",\r\n    \"ReshipmentReason\":\"testing charge on reship\",\r\n    \"ShippingAndHandlingAmount\":7.99\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host-webapi}}orders/17173246/reshipment/charge",
+					"host": [
+						"{{host-webapi}}orders"
+					],
+					"path": [
+						"17173246",
+						"reshipment",
+						"charge"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "orderId",
+			"value": "7728940"
+		},
+		{
+			"key": "masterOrderId",
+			"value": ""
+		},
+		{
+			"key": "customerId",
+			"value": ""
+		},
+		{
+			"key": "productId",
+			"value": ""
+		},
+		{
+			"key": "addressId",
+			"value": ""
+		},
+		{
+			"key": "authorization",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		}
+	]
+}

@@ -1,0 +1,1986 @@
+{
+	"info": {
+		"_postman_id": "7084f938-ed72-446f-b654-04cdaea6b15e",
+		"name": "Orders",
+		"description": "Requests made to tests our sales endpoints by Azure",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Place order using credit card",
+			"item": [
+				{
+					"name": "Create Order using credit card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Create Order with credit card] Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Create Order with credit card]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									"\r",
+									"var order = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('orderNumber', order.orderNumber);\r",
+									"pm.collectionVariables.set('cardId', order.cardId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// clean up these value before to execute for the fist time\r",
+									"pm.collectionVariables.set('orderNumber', \"\");\r",
+									"pm.collectionVariables.set('email', \"\");\r",
+									"pm.collectionVariables.set('sessionId', \"\");\r",
+									"pm.collectionVariables.set('cardId', \"\");\r",
+									"pm.collectionVariables.set('trackingNumber', \"\");\r",
+									"\r",
+									"\r",
+									"pm.collectionVariables.set('email', 'postman-user-' + Math.floor(Math.random() * 1000) + '@dfo.global');\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ShippingMethodId\": {{shipping-methodId}},\n  \"UseShippingAddressForBilling\": true,\n  \"ProductId\": {{productId}},\n  \"Customer\": {\n    \"Email\": \"{{email}}\",\n    \"PhoneNumber\": \"41232266\",\n    \"FirstName\": \"Postman\",\n    \"MiddleName\": \"Automated\",\n    \"LastName\": \"Testr\",\n    \"IP\": \"161.185.160.93\"\n  },\n  \"Payment\": {\n    \"Name\": \"Automated test\",\n    \"CreditCard\": \"4000000000000010\",\n    \"Expiration\": \"01/2023\",\n    \"Cvv\": \"443\",\n    \"Instalments\": 4\n  },\n  \"ShippingAddress\": {\n    \"FirstName\": \"Postman\",\n    \"MiddleName\": \"Testr\",\n    \"LastName\": \"Postman testr\",\n    \"Address1\": \"767 5th Ave\",\n    \"Address2\": \"\",\n    \"City\": \"New York\",\n    \"ZipCode\": \"10153\",\n    \"State\": \"NY\",\n    \"CountryCode\": \"US\",\n    \"PhoneNumber\": \"+1 212-336-1440\"\n  },\n  \"AnalyticsV2\": {\n    \"ReferringUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1.html?iep=true&pid=1&Affid=3248A&s1=SS001&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"LandingUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1-mask.html?iep=true&pid=1&Affid=3248g&s1=SS007&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"UserStringData64\": \"U29mdHdhcmVWZXJzaW9uPTAuMS4xMSZGaW5nZXJwcmludD0zMDQ3NDU0Nzg0JlVzZXJBZ2VudExvd2VyQ2FzZT1tb3ppbGxhJTJGNS4wJTIwKGlwaG9uZSUzQiUyMGNwdSUyMGlwaG9uZSUyMG9zJTIwMTNfMyUyMGxpa2UlMjBtYWMlMjBvcyUyMHgpJTIwYXBwbGV3ZWJraXQlMkY2MDUuMS4xNSUyMChraHRtbCUyQyUyMGxpa2UlMjBnZWNrbyklMjBnc2ElMkYxMDIuMC4zMDQ5NDQ1NTklMjBtb2JpbGUlMkYxNWUxNDglMjBzYWZhcmklMkY2MDQuMSZCcm93c2VyPVNhZmFyaSZCcm93c2VyVmVyc2lvbj1uJTJGYSZFbmdpbmU9V2ViS2l0Jk9TPWlPUyZPU1ZlcnNpb249MTMuMyZEZXZpY2U9aVBob25lJkRldmljZVR5cGU9bW9iaWxlJkRldmljZVZlbmRvcj1BcHBsZSZDUFU9biUyRmEmaXNNb2JpbGU9dHJ1ZSZpc01vYmlsZU1ham9yPXRydWUmaXNNb2JpbGVBbmRyb2lkPW4lMkZhJmlzTW9iaWxlT3BlcmE9biUyRmEmaXNNb2JpbGVXaW5kb3dzPW4lMkZhJmlzTW9iaWxlQmxhY2tCZXJyeT1uJTJGYSZpc01vYmlsZUlPUz10cnVlJmlzSXBob25lPXRydWUmaXNJcGFkPW4lMkZhJmlzSXBvZD1uJTJGYSZTY3JlZW5QcmludD1DdXJyZW50JTIwUmVzb2x1dGlvbiUzQSUyMDMyMHg1NjglMkMlMjBBdmFpbGFibGUlMjBSZXNvbHV0aW9uJTNBJTIwMzIweDU2OCUyQyUyMENvbG9yJTIwRGVwdGglM0ElMjAzMiUyQyUyMERldmljZSUyMFhEUEklM0ElMjB1bmRlZmluZWQlMkMlMjBEZXZpY2UlMjBZRFBJJTNBJTIwdW5kZWZpbmVkJkNvbG9yRGVwdGg9MzImQ3VycmVudFJlc29sdXRpb249MzIweDU2OCZBdmFpbGFibGVSZXNvbHV0aW9uPTMyMHg1NjgmRGV2aWNlWERQST1uJTJGYSZEZXZpY2VZRFBJPW4lMkZhJlBsdWdpbnM9biUyRmEmaXNKYXZhPW4lMkZhJkphdmFWZXJzaW9uPW4lMkZhJmlzRmxhc2g9biUyRmEmRmxhc2hWZXJzaW9uPW4lMkZhJmlzU2lsdmVybGlnaHQ9biUyRmEmU2lsdmVybGlnaHRWZXJzaW9uPW4lMkZhJmlzTWltZVR5cGVzPW4lMkZhJk1pbWVUeXBlcz1uJTJGYSZGb250cz1BcmlhbCUyQyUyMEJhdWhhdXMlMjA5MyUyQyUyMENoYWxrZHVzdGVyJTJDJTIwQ291cmllciUyME5ldyUyQyUyMEdlb3JnaWElMkMlMjBNZW5sbyUyQyUyME1pY3Jvc29mdCUyMEpoZW5nSGVpJTJDJTIwUGFweXJ1cyUyQyUyMFJvY2t3ZWxsJTJDJTIwU3ltYm9sJTJDJTIwVGltZXMlMjBOZXclMjBSb21hbiUyQyUyMFRyZWJ1Y2hldCUyME1TJTJDJTIwVmVyZGFuYSUyQyUyMCZpc0xvY2FsU3RvcmFnZT10cnVlJmlzU2Vzc2lvblN0b3JhZ2U9dHJ1ZSZpc0Nvb2tpZT10cnVlJlRpbWVab25lPUNEVCZMYW5ndWFnZT1lbi1VUyZTeXN0ZW1MYW5ndWFnZT1uJTJGYSZpc0NhbnZhcz10cnVlJkN1c3RvbUZpbmdlcnByaW50PTM2ODE4MjgxMTU=\",\n    \"affid\": null,\n    \"s1\": null,\n    \"s2\": null,\n    \"s3\": null,\n    \"s4\": null,\n    \"s5\": null\n  },\n  \"FunnelBoxId\": 0,\n  \"FingerPrintId\": \"5dacadcd0184b79cff2c97e4203de656\",\n  \"AntiFraud\": {\n    \"SessionId\": \"98798794654984524\"\n  },\n  \"CallCenter\": null,\n  \"AdditionalInfo\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?behaviorId=2",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "behaviorId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Upgrade Order (old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Upgrade Order]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Upgrade Order]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/orders/{{orderNumber}}/{{upgrade-productId}}",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"orders",
+								"{{orderNumber}}",
+								"{{upgrade-productId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order using coupon code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Create Order using coupon]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Create Order using coupon]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									"\r",
+									"var order = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('orderNumber', order.orderNumber);\r",
+									"pm.collectionVariables.set('cardId', order.cardId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('email', 'postman-automated-' + Math.floor(Math.random() * 1000) + '@dfo.global');\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"CouponCode\":\"PSTM5%OFF\",\n  \"ShippingMethodId\": {{shipping-methodId}},\n  \"UseShippingAddressForBilling\": true,\n  \"ProductId\": {{productId}},\n  \"Customer\": {\n    \"Email\": \"{{email}}\",\n    \"PhoneNumber\": \"41232266\",\n    \"FirstName\": \"Postman\",\n    \"MiddleName\": \"Automated\",\n    \"LastName\": \"Testr\",\n    \"IP\": \"161.185. 160.93\"\n  },\n  \"Payment\": {\n    \"Name\": \"Automated test\",\n    \"CreditCard\": \"4000000000000010\",\n    \"Expiration\": \"01/2023\",\n    \"Cvv\": \"443\",\n    \"Instalments\": 4\n  },\n  \"ShippingAddress\": {\n    \"FirstName\": \"Postman\",\n    \"MiddleName\": \"Testr\",\n    \"LastName\": \"Postman testr\",\n    \"Address1\": \"767 5th Ave\",\n    \"Address2\": \"\",\n    \"City\": \"New York\",\n    \"ZipCode\": \"10153\",\n    \"State\": \"NY\",\n    \"CountryCode\": \"US\",\n    \"PhoneNumber\": \"+1 212-336-1440\"\n  },\n  \"AnalyticsV2\": {\n    \"ReferringUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1.html?iep=true&pid=1&Affid=3248A&s1=SS001&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"LandingUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1-mask.html?iep=true&pid=1&Affid=3248g&s1=SS007&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"UserStringData64\": \"U29mdHdhcmVWZXJzaW9uPTAuMS4xMSZGaW5nZXJwcmludD0zMDQ3NDU0Nzg0JlVzZXJBZ2VudExvd2VyQ2FzZT1tb3ppbGxhJTJGNS4wJTIwKGlwaG9uZSUzQiUyMGNwdSUyMGlwaG9uZSUyMG9zJTIwMTNfMyUyMGxpa2UlMjBtYWMlMjBvcyUyMHgpJTIwYXBwbGV3ZWJraXQlMkY2MDUuMS4xNSUyMChraHRtbCUyQyUyMGxpa2UlMjBnZWNrbyklMjBnc2ElMkYxMDIuMC4zMDQ5NDQ1NTklMjBtb2JpbGUlMkYxNWUxNDglMjBzYWZhcmklMkY2MDQuMSZCcm93c2VyPVNhZmFyaSZCcm93c2VyVmVyc2lvbj1uJTJGYSZFbmdpbmU9V2ViS2l0Jk9TPWlPUyZPU1ZlcnNpb249MTMuMyZEZXZpY2U9aVBob25lJkRldmljZVR5cGU9bW9iaWxlJkRldmljZVZlbmRvcj1BcHBsZSZDUFU9biUyRmEmaXNNb2JpbGU9dHJ1ZSZpc01vYmlsZU1ham9yPXRydWUmaXNNb2JpbGVBbmRyb2lkPW4lMkZhJmlzTW9iaWxlT3BlcmE9biUyRmEmaXNNb2JpbGVXaW5kb3dzPW4lMkZhJmlzTW9iaWxlQmxhY2tCZXJyeT1uJTJGYSZpc01vYmlsZUlPUz10cnVlJmlzSXBob25lPXRydWUmaXNJcGFkPW4lMkZhJmlzSXBvZD1uJTJGYSZTY3JlZW5QcmludD1DdXJyZW50JTIwUmVzb2x1dGlvbiUzQSUyMDMyMHg1NjglMkMlMjBBdmFpbGFibGUlMjBSZXNvbHV0aW9uJTNBJTIwMzIweDU2OCUyQyUyMENvbG9yJTIwRGVwdGglM0ElMjAzMiUyQyUyMERldmljZSUyMFhEUEklM0ElMjB1bmRlZmluZWQlMkMlMjBEZXZpY2UlMjBZRFBJJTNBJTIwdW5kZWZpbmVkJkNvbG9yRGVwdGg9MzImQ3VycmVudFJlc29sdXRpb249MzIweDU2OCZBdmFpbGFibGVSZXNvbHV0aW9uPTMyMHg1NjgmRGV2aWNlWERQST1uJTJGYSZEZXZpY2VZRFBJPW4lMkZhJlBsdWdpbnM9biUyRmEmaXNKYXZhPW4lMkZhJkphdmFWZXJzaW9uPW4lMkZhJmlzRmxhc2g9biUyRmEmRmxhc2hWZXJzaW9uPW4lMkZhJmlzU2lsdmVybGlnaHQ9biUyRmEmU2lsdmVybGlnaHRWZXJzaW9uPW4lMkZhJmlzTWltZVR5cGVzPW4lMkZhJk1pbWVUeXBlcz1uJTJGYSZGb250cz1BcmlhbCUyQyUyMEJhdWhhdXMlMjA5MyUyQyUyMENoYWxrZHVzdGVyJTJDJTIwQ291cmllciUyME5ldyUyQyUyMEdlb3JnaWElMkMlMjBNZW5sbyUyQyUyME1pY3Jvc29mdCUyMEpoZW5nSGVpJTJDJTIwUGFweXJ1cyUyQyUyMFJvY2t3ZWxsJTJDJTIwU3ltYm9sJTJDJTIwVGltZXMlMjBOZXclMjBSb21hbiUyQyUyMFRyZWJ1Y2hldCUyME1TJTJDJTIwVmVyZGFuYSUyQyUyMCZpc0xvY2FsU3RvcmFnZT10cnVlJmlzU2Vzc2lvblN0b3JhZ2U9dHJ1ZSZpc0Nvb2tpZT10cnVlJlRpbWVab25lPUNEVCZMYW5ndWFnZT1lbi1VUyZTeXN0ZW1MYW5ndWFnZT1uJTJGYSZpc0NhbnZhcz10cnVlJkN1c3RvbUZpbmdlcnByaW50PTM2ODE4MjgxMTU=\",\n    \"affid\": null,\n    \"s1\": null,\n    \"s2\": null,\n    \"s3\": null,\n    \"s4\": null,\n    \"s5\": null\n  },\n  \"FunnelBoxId\": 0,\n  \"FingerPrintId\": \"5dacadcd0184b79cff2c97e4203de656\",\n  \"AntiFraud\": {\n    \"SessionId\": \"98798794654984524\"\n  },\n  \"CallCenter\": null,\n  \"AdditionalInfo\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?behaviorId=2",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "behaviorId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order (BRL) using credit card",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Create Order BRL]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Create Order BRL]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									"\r",
+									"var order = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('orderNumber', order.orderNumber);\r",
+									"pm.collectionVariables.set('cardId', order.cardId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('email', 'postman-user-' + Math.floor(Math.random() * 1000) + '@dfo.global');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ShippingMethodId\": {{shipping-methodId}},\n  \"UseShippingAddressForBilling\": true,\n  \"ProductId\": {{productId}},\n  \"Customer\": {\n    \"Email\": \"{{email}}\",\n    \"PhoneNumber\": \"41232266\",\n    \"FirstName\": \"Automated\",\n    \"MiddleName\": \"Test\",\n    \"LastName\": \"Postman\",\n    \"IP\": \"201.95.66.70\"\n  },\n  \"Payment\": {\n    \"Name\": \"Automated Teste Postman\",\n    \"CreditCard\": \"4000000000000010\",\n    \"Expiration\": \"01/2022\",\n    \"Cvv\": \"443\",\n    \"Instalments\": 4\n  },\n  \"ShippingAddress\": {\n    \"FirstName\": \"Automated\",\n    \"MiddleName\": \"Teste\",\n    \"LastName\": \"postman\",\n    \"Address1\": \"Avenida Pedroso de Morais, 457\",\n    \"Address2\": \"Sala 410\",\n    \"City\": \"São Paulo\",\n    \"ZipCode\": \"04140000\",\n    \"State\": \"SP\",\n    \"CountryCode\": \"BR\",\n    \"PhoneNumber\": \"(11) 1289-7014\"\n  },\n  \"AnalyticsV2\": {\n    \"ReferringUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1.html?iep=true&pid=1&Affid=3248A&s1=SS001&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"LandingUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1-mask.html?iep=true&pid=1&Affid=3248g&s1=SS007&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"UserStringData64\": \"U29mdHdhcmVWZXJzaW9uPTAuMS4xMSZGaW5nZXJwcmludD0zMDQ3NDU0Nzg0JlVzZXJBZ2VudExvd2VyQ2FzZT1tb3ppbGxhJTJGNS4wJTIwKGlwaG9uZSUzQiUyMGNwdSUyMGlwaG9uZSUyMG9zJTIwMTNfMyUyMGxpa2UlMjBtYWMlMjBvcyUyMHgpJTIwYXBwbGV3ZWJraXQlMkY2MDUuMS4xNSUyMChraHRtbCUyQyUyMGxpa2UlMjBnZWNrbyklMjBnc2ElMkYxMDIuMC4zMDQ5NDQ1NTklMjBtb2JpbGUlMkYxNWUxNDglMjBzYWZhcmklMkY2MDQuMSZCcm93c2VyPVNhZmFyaSZCcm93c2VyVmVyc2lvbj1uJTJGYSZFbmdpbmU9V2ViS2l0Jk9TPWlPUyZPU1ZlcnNpb249MTMuMyZEZXZpY2U9aVBob25lJkRldmljZVR5cGU9bW9iaWxlJkRldmljZVZlbmRvcj1BcHBsZSZDUFU9biUyRmEmaXNNb2JpbGU9dHJ1ZSZpc01vYmlsZU1ham9yPXRydWUmaXNNb2JpbGVBbmRyb2lkPW4lMkZhJmlzTW9iaWxlT3BlcmE9biUyRmEmaXNNb2JpbGVXaW5kb3dzPW4lMkZhJmlzTW9iaWxlQmxhY2tCZXJyeT1uJTJGYSZpc01vYmlsZUlPUz10cnVlJmlzSXBob25lPXRydWUmaXNJcGFkPW4lMkZhJmlzSXBvZD1uJTJGYSZTY3JlZW5QcmludD1DdXJyZW50JTIwUmVzb2x1dGlvbiUzQSUyMDMyMHg1NjglMkMlMjBBdmFpbGFibGUlMjBSZXNvbHV0aW9uJTNBJTIwMzIweDU2OCUyQyUyMENvbG9yJTIwRGVwdGglM0ElMjAzMiUyQyUyMERldmljZSUyMFhEUEklM0ElMjB1bmRlZmluZWQlMkMlMjBEZXZpY2UlMjBZRFBJJTNBJTIwdW5kZWZpbmVkJkNvbG9yRGVwdGg9MzImQ3VycmVudFJlc29sdXRpb249MzIweDU2OCZBdmFpbGFibGVSZXNvbHV0aW9uPTMyMHg1NjgmRGV2aWNlWERQST1uJTJGYSZEZXZpY2VZRFBJPW4lMkZhJlBsdWdpbnM9biUyRmEmaXNKYXZhPW4lMkZhJkphdmFWZXJzaW9uPW4lMkZhJmlzRmxhc2g9biUyRmEmRmxhc2hWZXJzaW9uPW4lMkZhJmlzU2lsdmVybGlnaHQ9biUyRmEmU2lsdmVybGlnaHRWZXJzaW9uPW4lMkZhJmlzTWltZVR5cGVzPW4lMkZhJk1pbWVUeXBlcz1uJTJGYSZGb250cz1BcmlhbCUyQyUyMEJhdWhhdXMlMjA5MyUyQyUyMENoYWxrZHVzdGVyJTJDJTIwQ291cmllciUyME5ldyUyQyUyMEdlb3JnaWElMkMlMjBNZW5sbyUyQyUyME1pY3Jvc29mdCUyMEpoZW5nSGVpJTJDJTIwUGFweXJ1cyUyQyUyMFJvY2t3ZWxsJTJDJTIwU3ltYm9sJTJDJTIwVGltZXMlMjBOZXclMjBSb21hbiUyQyUyMFRyZWJ1Y2hldCUyME1TJTJDJTIwVmVyZGFuYSUyQyUyMCZpc0xvY2FsU3RvcmFnZT10cnVlJmlzU2Vzc2lvblN0b3JhZ2U9dHJ1ZSZpc0Nvb2tpZT10cnVlJlRpbWVab25lPUNEVCZMYW5ndWFnZT1lbi1VUyZTeXN0ZW1MYW5ndWFnZT1uJTJGYSZpc0NhbnZhcz10cnVlJkN1c3RvbUZpbmdlcnByaW50PTM2ODE4MjgxMTU=\",\n    \"affid\": null,\n    \"s1\": null,\n    \"s2\": null,\n    \"s3\": null,\n    \"s4\": null,\n    \"s5\": null\n  },\n  \"FunnelBoxId\": 0,\n  \"FingerPrintId\": \"5dacadcd0184b79cff2c97e4203de656\",\n  \"AntiFraud\": {\n    \"SessionId\": \"98798794654984524\"\n  },\n  \"CallCenter\": null,\n  \"AdditionalInfo\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?behaviorId=2",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "behaviorId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order using CardId",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('email', 'postman-user-' + Math.floor(Math.random() * 1000) + '@dfo.global');"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Create Order using CardID]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Create Order using CardID]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									"\r",
+									"var order = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('orderNumber', order.orderNumber);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ShippingMethodId\": {{shipping-methodId}},\n  \"UseShippingAddressForBilling\": true,\n  \"ProductId\": {{productId}},\n  \"Customer\": {\n    \"Email\": \"{{email}}\",\n    \"PhoneNumber\": \"41232266\",\n    \"FirstName\": \"Automated\",\n    \"MiddleName\": \"Test\",\n    \"LastName\": \"postman\",\n    \"IP\": \"201.95.66.70\",\n    \"CustomerIdentificationValue\":\"31427411867\"\n  },\n  \"Payment\": {\n    \"CardId\": \"{{cardId}}\"\n  },\n  \"ShippingAddress\": {\n    \"FirstName\": \"Automated\",\n    \"MiddleName\": \"Teste\",\n    \"LastName\": \"postman\",\n    \"Address1\": \"Avenida Pedroso de Morais, 457\",\n    \"Address2\": \"Sala 410\",\n    \"City\": \"São Paulo\",\n    \"ZipCode\": \"04140000\",\n    \"State\": \"SP\",\n    \"CountryCode\": \"BR\",\n    \"PhoneNumber\": \"(11) 1289-7014\"\n  },\n  \"Analytics\": {\n    \"ReferringUrl\": null,\n    \"LandingUrl\": \"https://xpto.com/en/index.php\",\n    \"Browser\": \"Chrome\",\n    \"Os\": \"Windows\",\n    \"ScreenResolution\": \"1040x1920\",\n    \"Device\": \"Web OS\"\n  },\n  \"AntiFraud\": {\n    \"SessionId\": \"umasessionqualquer\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?behaviorId=2",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "behaviorId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Order and Miniupsell",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Create Miniupsell]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Create Miniupsell]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									"\r",
+									"var order = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('orderNumber', order.orderNumber);\r",
+									"pm.collectionVariables.set('cardId', order.cardId);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('email', 'postman-user-' + Math.floor(Math.random() * 1000) + '@dfo.global');\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"CouponCode\": null,\r\n    \"ShippingMethodId\": {{shipping-methodId}},\r\n    \"Comment\": null,\r\n    \"UseShippingAddressForBilling\": true,\r\n    \"ProductId\": {{productId}},\r\n    \"AuthenticatedUserId\": 0,\r\n    \"CampaignUpsell\": null,\r\n    \"MiniUpsell\": null,\r\n    \"MultipleMiniUpsells\": [\r\n        {\r\n            \"ProductId\": {{miniupsell-productId}},\r\n            \"ShippingMethodId\": {{miniupsell-shipping-method}}\r\n        }\r\n    ],\r\n    \"UpgradeUpsell\": null,\r\n    \"Customer\": {\r\n        \"Email\": \"{{email}}\",\r\n        \"PhoneNumber\": \"41232233\",\r\n        \"FirstName\": \"Postman\",\r\n        \"MiddleName\": \"Automated\",\r\n        \"LastName\": \"Testr\",\r\n        \"IP\": \"72.229.28.185\",\r\n        \"Location\": null\r\n    },\r\n    \"Mid\": null,\r\n    \"Payment\": {\r\n        \"Name\": \"Automated test\",\r\n        \"CreditCard\": \"4000000000000010\",\r\n        \"Expiration\": \"01/2023\",\r\n        \"Cvv\": \"443\",\r\n        \"Instalments\": 4\r\n    },\r\n    \"ShippingAddress\": {\r\n        \"Id\": null,\r\n        \"FirstName\": \"Postman\",\r\n        \"MiddleName\": \"Automated\",\r\n        \"LastName\": \"Testr\",\r\n        \"Address1\": \"Rua Pedroso de Morais, 457\",\r\n        \"Address2\": \"Sala 410\",\r\n        \"City\": \"São Paulo\",\r\n        \"ZipCode\": \"04140000\",\r\n        \"State\": \"SP\",\r\n        \"CountryCode\": \"BR\",\r\n        \"PhoneNumber\": \"(11) 1289-7014\",\r\n        \"IsVerified\": null\r\n    },\r\n    \"BillingAddress\": null,\r\n    \"Analytics\": {\r\n        \"ReferringUrl\": null,\r\n        \"LandingUrl\": \"https://xpto.com/en/index.php\",\r\n        \"Browser\": \"Chrome\",\r\n        \"Os\": \"Windows\",\r\n        \"ScreenResolution\": \"1040x1920\",\r\n        \"Device\": \"Web OS\"\r\n    },\r\n    \"AnalyticsV2\": null,\r\n    \"FunnelBoxId\": null,\r\n    \"FingerPrintId\": null,\r\n    \"AntiFraud\": {\r\n        \"SessionId\": \"umasessionqualquer\"\r\n    },\r\n    \"CallCenter\": null,\r\n    \"AdditionalInfo\": null\r\n}"
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?behaviorId=2",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "behaviorId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Upsell",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Create Upsell]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Create Upsell]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ShippingMethodId\": {{upsell-shipping-methodId}},\n  \"UseShippingAddressForBilling\": true,\n  \"ProductId\": {{upsell-productId}},\n  \"CampaignUpsell\": {\n  \t\"webKey\":\"{{webkey}}\",\n  \t\"relatedOrderNumber\":\"{{orderNumber}}\"\n  },\n  \"Customer\": {\n    \"Email\": \"{{email}}\"\n  },\n  \"Payment\": {\n    \"PaymentProcessorId\": null,\n    \"CardId\": \"{{cardId}}\"\n  },\n  \"AntiFraud\": {\n    \"SessionId\": \"umasessionqualquer\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{upsell-webkey}}?behaviorId=2",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{upsell-webkey}}"
+							],
+							"query": [
+								{
+									"key": "behaviorId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Process Upsell",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Process Upsell]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Process Upsell]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson[0].success).to.eql(true);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/upsell/{{orderNumber}}",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"upsell",
+								"{{orderNumber}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Place order using Paypal Direct Debit",
+			"item": [
+				{
+					"name": "Create Order using PayPal Direct Debit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Create Order Paypal Direct Debit]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Create Order Paypal Direct Debit]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									"\r",
+									"var order = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('trackingNumber', order.trackingNumber);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ShippingMethodId\": {{shipping-methodId}},\n  \"UseShippingAddressForBilling\": true,\n  \"ProductId\": {{productId}},\n  \"Customer\": {\n    \"IP\": \"72.229.28.185\",\n    \"Email\": \"ap@pa.com\"\n  },\n  \"Payment\": {\n    \"PaymentProcessorId\": {{paypalPaymentProcessorId}}\n  },\n  \"AnalyticsV2\": {\n    \"ReferringUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1.html?iep=true&pid=1&Affid=3248A&s1=SS001&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"LandingUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1-mask.html?iep=true&pid=1&Affid=3248g&s1=SS007&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"UserStringData64\": \"U29mdHdhcmVWZXJzaW9uPTAuMS4xMSZGaW5nZXJwcmludD0zMDQ3NDU0Nzg0JlVzZXJBZ2VudExvd2VyQ2FzZT1tb3ppbGxhJTJGNS4wJTIwKGlwaG9uZSUzQiUyMGNwdSUyMGlwaG9uZSUyMG9zJTIwMTNfMyUyMGxpa2UlMjBtYWMlMjBvcyUyMHgpJTIwYXBwbGV3ZWJraXQlMkY2MDUuMS4xNSUyMChraHRtbCUyQyUyMGxpa2UlMjBnZWNrbyklMjBnc2ElMkYxMDIuMC4zMDQ5NDQ1NTklMjBtb2JpbGUlMkYxNWUxNDglMjBzYWZhcmklMkY2MDQuMSZCcm93c2VyPVNhZmFyaSZCcm93c2VyVmVyc2lvbj1uJTJGYSZFbmdpbmU9V2ViS2l0Jk9TPWlPUyZPU1ZlcnNpb249MTMuMyZEZXZpY2U9aVBob25lJkRldmljZVR5cGU9bW9iaWxlJkRldmljZVZlbmRvcj1BcHBsZSZDUFU9biUyRmEmaXNNb2JpbGU9dHJ1ZSZpc01vYmlsZU1ham9yPXRydWUmaXNNb2JpbGVBbmRyb2lkPW4lMkZhJmlzTW9iaWxlT3BlcmE9biUyRmEmaXNNb2JpbGVXaW5kb3dzPW4lMkZhJmlzTW9iaWxlQmxhY2tCZXJyeT1uJTJGYSZpc01vYmlsZUlPUz10cnVlJmlzSXBob25lPXRydWUmaXNJcGFkPW4lMkZhJmlzSXBvZD1uJTJGYSZTY3JlZW5QcmludD1DdXJyZW50JTIwUmVzb2x1dGlvbiUzQSUyMDMyMHg1NjglMkMlMjBBdmFpbGFibGUlMjBSZXNvbHV0aW9uJTNBJTIwMzIweDU2OCUyQyUyMENvbG9yJTIwRGVwdGglM0ElMjAzMiUyQyUyMERldmljZSUyMFhEUEklM0ElMjB1bmRlZmluZWQlMkMlMjBEZXZpY2UlMjBZRFBJJTNBJTIwdW5kZWZpbmVkJkNvbG9yRGVwdGg9MzImQ3VycmVudFJlc29sdXRpb249MzIweDU2OCZBdmFpbGFibGVSZXNvbHV0aW9uPTMyMHg1NjgmRGV2aWNlWERQST1uJTJGYSZEZXZpY2VZRFBJPW4lMkZhJlBsdWdpbnM9biUyRmEmaXNKYXZhPW4lMkZhJkphdmFWZXJzaW9uPW4lMkZhJmlzRmxhc2g9biUyRmEmRmxhc2hWZXJzaW9uPW4lMkZhJmlzU2lsdmVybGlnaHQ9biUyRmEmU2lsdmVybGlnaHRWZXJzaW9uPW4lMkZhJmlzTWltZVR5cGVzPW4lMkZhJk1pbWVUeXBlcz1uJTJGYSZGb250cz1BcmlhbCUyQyUyMEJhdWhhdXMlMjA5MyUyQyUyMENoYWxrZHVzdGVyJTJDJTIwQ291cmllciUyME5ldyUyQyUyMEdlb3JnaWElMkMlMjBNZW5sbyUyQyUyME1pY3Jvc29mdCUyMEpoZW5nSGVpJTJDJTIwUGFweXJ1cyUyQyUyMFJvY2t3ZWxsJTJDJTIwU3ltYm9sJTJDJTIwVGltZXMlMjBOZXclMjBSb21hbiUyQyUyMFRyZWJ1Y2hldCUyME1TJTJDJTIwVmVyZGFuYSUyQyUyMCZpc0xvY2FsU3RvcmFnZT10cnVlJmlzU2Vzc2lvblN0b3JhZ2U9dHJ1ZSZpc0Nvb2tpZT10cnVlJlRpbWVab25lPUNEVCZMYW5ndWFnZT1lbi1VUyZTeXN0ZW1MYW5ndWFnZT1uJTJGYSZpc0NhbnZhcz10cnVlJkN1c3RvbUZpbmdlcnByaW50PTM2ODE4MjgxMTU=\",\n    \"affid\": null,\n    \"s1\": null,\n    \"s2\": null,\n    \"s3\": null,\n    \"s4\": null,\n    \"s5\": null\n  },\n  \"FunnelBoxId\": 0,\n  \"FingerPrintId\": \"5dacadcd0184b79cff2c97e4203de656\",\n  \"AntiFraud\": {\n    \"SessionId\": \"98798794654984524\"\n  },\n  \"CallCenter\": null,\n  \"AdditionalInfo\": null\n}"
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?behaviorId=2",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "behaviorId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order using PayPal Direct Debit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Update Order Paypal Direct Debit]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Update Order Paypal Direct Debit]should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?trackingNumber={{trackingNumber}}&isTest=true",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "trackingNumber",
+									"value": "{{trackingNumber}}"
+								},
+								{
+									"key": "isTest",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Place order using Braintree",
+			"item": [
+				{
+					"name": "Create Order using Braintree",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Create Order Paypal Direct Debit]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Create Order Paypal Direct Debit]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									"\r",
+									"var order = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('trackingNumber', order.trackingNumber);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('email', 'postman-user-' + Math.floor(Math.random() * 1000) + '@dfo.global');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ShippingMethodId\": {{shipping-methodId}},\n  \"UseShippingAddressForBilling\": true,\n  \"ProductId\": {{productId}},\n  \"Customer\": {\n    \"Email\": \"{{email}}\",\n    \"PhoneNumber\": \"41232266\",\n    \"FirstName\": \"Postman\",\n    \"MiddleName\": \"Automated\",\n    \"LastName\": \"Testr\",\n    \"IP\": \"161.185.160.93\"\n  },\n  \"Payment\": {\n    \"PaymentProcessorId\": {{braintreePaymentProcessorId}}\n  },\n  \"ShippingAddress\": {\n    \"FirstName\": \"Postman\",\n    \"MiddleName\": \"Testr\",\n    \"LastName\": \"Postman testr\",\n    \"Address1\": \"767 5th Ave\",\n    \"Address2\": \"\",\n    \"City\": \"New York\",\n    \"ZipCode\": \"10153\",\n    \"State\": \"NY\",\n    \"CountryCode\": \"US\",\n    \"PhoneNumber\": \"+1 212-336-1440\"\n  },\n  \"AnalyticsV2\": {\n    \"ReferringUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1.html?iep=true&pid=1&Affid=3248A&s1=SS001&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"LandingUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1-mask.html?iep=true&pid=1&Affid=3248g&s1=SS007&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"UserStringData64\": \"U29mdHdhcmVWZXJzaW9uPTAuMS4xMSZGaW5nZXJwcmludD0zMDQ3NDU0Nzg0JlVzZXJBZ2VudExvd2VyQ2FzZT1tb3ppbGxhJTJGNS4wJTIwKGlwaG9uZSUzQiUyMGNwdSUyMGlwaG9uZSUyMG9zJTIwMTNfMyUyMGxpa2UlMjBtYWMlMjBvcyUyMHgpJTIwYXBwbGV3ZWJraXQlMkY2MDUuMS4xNSUyMChraHRtbCUyQyUyMGxpa2UlMjBnZWNrbyklMjBnc2ElMkYxMDIuMC4zMDQ5NDQ1NTklMjBtb2JpbGUlMkYxNWUxNDglMjBzYWZhcmklMkY2MDQuMSZCcm93c2VyPVNhZmFyaSZCcm93c2VyVmVyc2lvbj1uJTJGYSZFbmdpbmU9V2ViS2l0Jk9TPWlPUyZPU1ZlcnNpb249MTMuMyZEZXZpY2U9aVBob25lJkRldmljZVR5cGU9bW9iaWxlJkRldmljZVZlbmRvcj1BcHBsZSZDUFU9biUyRmEmaXNNb2JpbGU9dHJ1ZSZpc01vYmlsZU1ham9yPXRydWUmaXNNb2JpbGVBbmRyb2lkPW4lMkZhJmlzTW9iaWxlT3BlcmE9biUyRmEmaXNNb2JpbGVXaW5kb3dzPW4lMkZhJmlzTW9iaWxlQmxhY2tCZXJyeT1uJTJGYSZpc01vYmlsZUlPUz10cnVlJmlzSXBob25lPXRydWUmaXNJcGFkPW4lMkZhJmlzSXBvZD1uJTJGYSZTY3JlZW5QcmludD1DdXJyZW50JTIwUmVzb2x1dGlvbiUzQSUyMDMyMHg1NjglMkMlMjBBdmFpbGFibGUlMjBSZXNvbHV0aW9uJTNBJTIwMzIweDU2OCUyQyUyMENvbG9yJTIwRGVwdGglM0ElMjAzMiUyQyUyMERldmljZSUyMFhEUEklM0ElMjB1bmRlZmluZWQlMkMlMjBEZXZpY2UlMjBZRFBJJTNBJTIwdW5kZWZpbmVkJkNvbG9yRGVwdGg9MzImQ3VycmVudFJlc29sdXRpb249MzIweDU2OCZBdmFpbGFibGVSZXNvbHV0aW9uPTMyMHg1NjgmRGV2aWNlWERQST1uJTJGYSZEZXZpY2VZRFBJPW4lMkZhJlBsdWdpbnM9biUyRmEmaXNKYXZhPW4lMkZhJkphdmFWZXJzaW9uPW4lMkZhJmlzRmxhc2g9biUyRmEmRmxhc2hWZXJzaW9uPW4lMkZhJmlzU2lsdmVybGlnaHQ9biUyRmEmU2lsdmVybGlnaHRWZXJzaW9uPW4lMkZhJmlzTWltZVR5cGVzPW4lMkZhJk1pbWVUeXBlcz1uJTJGYSZGb250cz1BcmlhbCUyQyUyMEJhdWhhdXMlMjA5MyUyQyUyMENoYWxrZHVzdGVyJTJDJTIwQ291cmllciUyME5ldyUyQyUyMEdlb3JnaWElMkMlMjBNZW5sbyUyQyUyME1pY3Jvc29mdCUyMEpoZW5nSGVpJTJDJTIwUGFweXJ1cyUyQyUyMFJvY2t3ZWxsJTJDJTIwU3ltYm9sJTJDJTIwVGltZXMlMjBOZXclMjBSb21hbiUyQyUyMFRyZWJ1Y2hldCUyME1TJTJDJTIwVmVyZGFuYSUyQyUyMCZpc0xvY2FsU3RvcmFnZT10cnVlJmlzU2Vzc2lvblN0b3JhZ2U9dHJ1ZSZpc0Nvb2tpZT10cnVlJlRpbWVab25lPUNEVCZMYW5ndWFnZT1lbi1VUyZTeXN0ZW1MYW5ndWFnZT1uJTJGYSZpc0NhbnZhcz10cnVlJkN1c3RvbUZpbmdlcnByaW50PTM2ODE4MjgxMTU=\",\n    \"affid\": null,\n    \"s1\": null,\n    \"s2\": null,\n    \"s3\": null,\n    \"s4\": null,\n    \"s5\": null\n  },\n  \"FunnelBoxId\": 0,\n  \"FingerPrintId\": \"5dacadcd0184b79cff2c97e4203de656\",\n  \"AntiFraud\": {\n    \"SessionId\": \"98798794654984524\"\n  },\n  \"CallCenter\": null,\n  \"AdditionalInfo\": null\n}"
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?behaviorId=2",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "behaviorId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Place order using Sezzle",
+			"item": [
+				{
+					"name": "Create Order using Sezzle",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Create Order Sezzle]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Create Sezzle]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									"\r",
+									"var order = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('trackingNumber', order.trackingNumber);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('email', 'postman-user-' + Math.floor(Math.random() * 1000) + '@dfo.global');"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ShippingMethodId\": {{shipping-methodId}},\n  \"UseShippingAddressForBilling\": true,\n  \"ProductId\": {{productId}},\n  \"Customer\": {\n    \"Email\": \"{{email}}\",\n    \"PhoneNumber\": \"41232266\",\n    \"FirstName\": \"Postman\",\n    \"MiddleName\": \"Automated\",\n    \"LastName\": \"Testr\",\n    \"IP\": \"161.185.160.93\"\n  },\n  \"Payment\": {\n    \"PaymentProcessorId\": {{sezzlePaymentProcessorId}}\n  },\n  \"ShippingAddress\": {\n    \"FirstName\": \"Postman\",\n    \"MiddleName\": \"Testr\",\n    \"LastName\": \"Postman testr\",\n    \"Address1\": \"767 5th Ave\",\n    \"Address2\": \"\",\n    \"City\": \"New York\",\n    \"ZipCode\": \"10153\",\n    \"State\": \"NY\",\n    \"CountryCode\": \"US\",\n    \"PhoneNumber\": \"+1 212-336-1440\"\n  },\n  \"AnalyticsV2\": {\n    \"ReferringUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1.html?iep=true&pid=1&Affid=3248A&s1=SS001&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"LandingUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1-mask.html?iep=true&pid=1&Affid=3248g&s1=SS007&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"UserStringData64\": \"U29mdHdhcmVWZXJzaW9uPTAuMS4xMSZGaW5nZXJwcmludD0zMDQ3NDU0Nzg0JlVzZXJBZ2VudExvd2VyQ2FzZT1tb3ppbGxhJTJGNS4wJTIwKGlwaG9uZSUzQiUyMGNwdSUyMGlwaG9uZSUyMG9zJTIwMTNfMyUyMGxpa2UlMjBtYWMlMjBvcyUyMHgpJTIwYXBwbGV3ZWJraXQlMkY2MDUuMS4xNSUyMChraHRtbCUyQyUyMGxpa2UlMjBnZWNrbyklMjBnc2ElMkYxMDIuMC4zMDQ5NDQ1NTklMjBtb2JpbGUlMkYxNWUxNDglMjBzYWZhcmklMkY2MDQuMSZCcm93c2VyPVNhZmFyaSZCcm93c2VyVmVyc2lvbj1uJTJGYSZFbmdpbmU9V2ViS2l0Jk9TPWlPUyZPU1ZlcnNpb249MTMuMyZEZXZpY2U9aVBob25lJkRldmljZVR5cGU9bW9iaWxlJkRldmljZVZlbmRvcj1BcHBsZSZDUFU9biUyRmEmaXNNb2JpbGU9dHJ1ZSZpc01vYmlsZU1ham9yPXRydWUmaXNNb2JpbGVBbmRyb2lkPW4lMkZhJmlzTW9iaWxlT3BlcmE9biUyRmEmaXNNb2JpbGVXaW5kb3dzPW4lMkZhJmlzTW9iaWxlQmxhY2tCZXJyeT1uJTJGYSZpc01vYmlsZUlPUz10cnVlJmlzSXBob25lPXRydWUmaXNJcGFkPW4lMkZhJmlzSXBvZD1uJTJGYSZTY3JlZW5QcmludD1DdXJyZW50JTIwUmVzb2x1dGlvbiUzQSUyMDMyMHg1NjglMkMlMjBBdmFpbGFibGUlMjBSZXNvbHV0aW9uJTNBJTIwMzIweDU2OCUyQyUyMENvbG9yJTIwRGVwdGglM0ElMjAzMiUyQyUyMERldmljZSUyMFhEUEklM0ElMjB1bmRlZmluZWQlMkMlMjBEZXZpY2UlMjBZRFBJJTNBJTIwdW5kZWZpbmVkJkNvbG9yRGVwdGg9MzImQ3VycmVudFJlc29sdXRpb249MzIweDU2OCZBdmFpbGFibGVSZXNvbHV0aW9uPTMyMHg1NjgmRGV2aWNlWERQST1uJTJGYSZEZXZpY2VZRFBJPW4lMkZhJlBsdWdpbnM9biUyRmEmaXNKYXZhPW4lMkZhJkphdmFWZXJzaW9uPW4lMkZhJmlzRmxhc2g9biUyRmEmRmxhc2hWZXJzaW9uPW4lMkZhJmlzU2lsdmVybGlnaHQ9biUyRmEmU2lsdmVybGlnaHRWZXJzaW9uPW4lMkZhJmlzTWltZVR5cGVzPW4lMkZhJk1pbWVUeXBlcz1uJTJGYSZGb250cz1BcmlhbCUyQyUyMEJhdWhhdXMlMjA5MyUyQyUyMENoYWxrZHVzdGVyJTJDJTIwQ291cmllciUyME5ldyUyQyUyMEdlb3JnaWElMkMlMjBNZW5sbyUyQyUyME1pY3Jvc29mdCUyMEpoZW5nSGVpJTJDJTIwUGFweXJ1cyUyQyUyMFJvY2t3ZWxsJTJDJTIwU3ltYm9sJTJDJTIwVGltZXMlMjBOZXclMjBSb21hbiUyQyUyMFRyZWJ1Y2hldCUyME1TJTJDJTIwVmVyZGFuYSUyQyUyMCZpc0xvY2FsU3RvcmFnZT10cnVlJmlzU2Vzc2lvblN0b3JhZ2U9dHJ1ZSZpc0Nvb2tpZT10cnVlJlRpbWVab25lPUNEVCZMYW5ndWFnZT1lbi1VUyZTeXN0ZW1MYW5ndWFnZT1uJTJGYSZpc0NhbnZhcz10cnVlJkN1c3RvbUZpbmdlcnByaW50PTM2ODE4MjgxMTU=\",\n    \"affid\": null,\n    \"s1\": null,\n    \"s2\": null,\n    \"s3\": null,\n    \"s4\": null,\n    \"s5\": null\n  },\n  \"FunnelBoxId\": 0,\n  \"FingerPrintId\": \"5dacadcd0184b79cff2c97e4203de656\",\n  \"AntiFraud\": {\n    \"SessionId\": \"98798794654984524\"\n  },\n  \"CallCenter\": null,\n  \"AdditionalInfo\": null\n}"
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?behaviorId=2",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "behaviorId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order using Sezzle",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Update Order Sezzle]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?trackingNumber={{trackingNumber}}&isTest=true",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "trackingNumber",
+									"value": "{{trackingNumber}}"
+								},
+								{
+									"key": "isTest",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Place order using Paypal RefTrans",
+			"item": [
+				{
+					"name": "Create Order using PayPal RefTrans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Create Order Paypal RefTrans]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Create Order Paypal RefTrans]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									"\r",
+									"var order = pm.response.json();\r",
+									"\r",
+									"pm.collectionVariables.set('trackingNumber', order.trackingNumber);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ShippingMethodId\": {{shipping-methodId}},\n  \"UseShippingAddressForBilling\": true,\n  \"ProductId\": {{productId}},\n  \"Customer\": {\n    \"IP\": \"72.229.28.185\"\n  },\n  \"Payment\": {\n    \"PaymentProcessorId\": {{paypalRefTransPaymentProcessorId}}\n  },\n  \"AnalyticsV2\": {\n    \"ReferringUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1.html?iep=true&pid=1&Affid=3248A&s1=SS001&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"LandingUrl\": \"https://www.getplaybeatz.com/en/order-global-st-ship-alt1-mask.html?iep=true&pid=1&Affid=3248g&s1=SS007&s2=&s3=&s4=1927&s5=&domain1=www.frstbte.com&network_id=69&DirectLink=Y&ea=68FS5P1&eo=4DK1C6Z&uid=4660&cc=3248CC1927&gclid=EAIaIQobChMI572Dl4H96AIVw_3jBx0b3ArpEAAYASAAEgIeM_D_BwE\",\n    \"UserStringData64\": \"U29mdHdhcmVWZXJzaW9uPTAuMS4xMSZGaW5nZXJwcmludD0zMDQ3NDU0Nzg0JlVzZXJBZ2VudExvd2VyQ2FzZT1tb3ppbGxhJTJGNS4wJTIwKGlwaG9uZSUzQiUyMGNwdSUyMGlwaG9uZSUyMG9zJTIwMTNfMyUyMGxpa2UlMjBtYWMlMjBvcyUyMHgpJTIwYXBwbGV3ZWJraXQlMkY2MDUuMS4xNSUyMChraHRtbCUyQyUyMGxpa2UlMjBnZWNrbyklMjBnc2ElMkYxMDIuMC4zMDQ5NDQ1NTklMjBtb2JpbGUlMkYxNWUxNDglMjBzYWZhcmklMkY2MDQuMSZCcm93c2VyPVNhZmFyaSZCcm93c2VyVmVyc2lvbj1uJTJGYSZFbmdpbmU9V2ViS2l0Jk9TPWlPUyZPU1ZlcnNpb249MTMuMyZEZXZpY2U9aVBob25lJkRldmljZVR5cGU9bW9iaWxlJkRldmljZVZlbmRvcj1BcHBsZSZDUFU9biUyRmEmaXNNb2JpbGU9dHJ1ZSZpc01vYmlsZU1ham9yPXRydWUmaXNNb2JpbGVBbmRyb2lkPW4lMkZhJmlzTW9iaWxlT3BlcmE9biUyRmEmaXNNb2JpbGVXaW5kb3dzPW4lMkZhJmlzTW9iaWxlQmxhY2tCZXJyeT1uJTJGYSZpc01vYmlsZUlPUz10cnVlJmlzSXBob25lPXRydWUmaXNJcGFkPW4lMkZhJmlzSXBvZD1uJTJGYSZTY3JlZW5QcmludD1DdXJyZW50JTIwUmVzb2x1dGlvbiUzQSUyMDMyMHg1NjglMkMlMjBBdmFpbGFibGUlMjBSZXNvbHV0aW9uJTNBJTIwMzIweDU2OCUyQyUyMENvbG9yJTIwRGVwdGglM0ElMjAzMiUyQyUyMERldmljZSUyMFhEUEklM0ElMjB1bmRlZmluZWQlMkMlMjBEZXZpY2UlMjBZRFBJJTNBJTIwdW5kZWZpbmVkJkNvbG9yRGVwdGg9MzImQ3VycmVudFJlc29sdXRpb249MzIweDU2OCZBdmFpbGFibGVSZXNvbHV0aW9uPTMyMHg1NjgmRGV2aWNlWERQST1uJTJGYSZEZXZpY2VZRFBJPW4lMkZhJlBsdWdpbnM9biUyRmEmaXNKYXZhPW4lMkZhJkphdmFWZXJzaW9uPW4lMkZhJmlzRmxhc2g9biUyRmEmRmxhc2hWZXJzaW9uPW4lMkZhJmlzU2lsdmVybGlnaHQ9biUyRmEmU2lsdmVybGlnaHRWZXJzaW9uPW4lMkZhJmlzTWltZVR5cGVzPW4lMkZhJk1pbWVUeXBlcz1uJTJGYSZGb250cz1BcmlhbCUyQyUyMEJhdWhhdXMlMjA5MyUyQyUyMENoYWxrZHVzdGVyJTJDJTIwQ291cmllciUyME5ldyUyQyUyMEdlb3JnaWElMkMlMjBNZW5sbyUyQyUyME1pY3Jvc29mdCUyMEpoZW5nSGVpJTJDJTIwUGFweXJ1cyUyQyUyMFJvY2t3ZWxsJTJDJTIwU3ltYm9sJTJDJTIwVGltZXMlMjBOZXclMjBSb21hbiUyQyUyMFRyZWJ1Y2hldCUyME1TJTJDJTIwVmVyZGFuYSUyQyUyMCZpc0xvY2FsU3RvcmFnZT10cnVlJmlzU2Vzc2lvblN0b3JhZ2U9dHJ1ZSZpc0Nvb2tpZT10cnVlJlRpbWVab25lPUNEVCZMYW5ndWFnZT1lbi1VUyZTeXN0ZW1MYW5ndWFnZT1uJTJGYSZpc0NhbnZhcz10cnVlJkN1c3RvbUZpbmdlcnByaW50PTM2ODE4MjgxMTU=\",\n    \"affid\": null,\n    \"s1\": null,\n    \"s2\": null,\n    \"s3\": null,\n    \"s4\": null,\n    \"s5\": null\n  },\n  \"FunnelBoxId\": 0,\n  \"FingerPrintId\": \"5dacadcd0184b79cff2c97e4203de656\",\n  \"AntiFraud\": {\n    \"SessionId\": \"98798794654984524\"\n  },\n  \"CallCenter\": null,\n  \"AdditionalInfo\": null\n}"
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?behaviorId=2",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "behaviorId",
+									"value": "2"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "[DISABLED] Update Order using PayPal RefTrans",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// pm.test(\"[Update Order Paypal RefTrans]Status Response\", function () {\r",
+									"//     pm.response.to.have.status(200);\r",
+									"// });\r",
+									"\r",
+									"// pm.test(\"[Update Order Paypal RefTrans]should return success\", function () {\r",
+									"//     const responseJson = pm.response.json();\r",
+									"//     pm.expect(responseJson.success).to.eql(true);\r",
+									"// });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{host-websales}}orders/{{webkey}}?trackingNumber={{trackingNumber}}&isTest=true",
+							"host": [
+								"{{host-websales}}orders"
+							],
+							"path": [
+								"{{webkey}}"
+							],
+							"query": [
+								{
+									"key": "trackingNumber",
+									"value": "{{trackingNumber}}"
+								},
+								{
+									"key": "isTest",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Shopping Cart",
+			"item": [
+				{
+					"name": "Shopping Cart(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Shopping cart] Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set('sessionId', pm.response.json());\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"BehaviorId\": 2,\n\t\"CustomerIP\": \"161.185. 160.93\",\n\t\"Product\":{\n\t\t\"ProductId\": {{productId}},\n\t\t\"Price\": 55,\n\t\t\"Quantity\": 2,\n\t\t\"ShippingMethodId\": {{shopping-cart-shipping-methodId}}\n\t}\n}"
+						},
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/shoppingcart/{{webkey-shoppingcart}}/new",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"shoppingcart",
+								"{{webkey-shoppingcart}}",
+								"new"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Shopping Cart informing customer(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Shopping cart Customer Cartao]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('email', 'postman-user-' + Math.floor(Math.random() * 1000) + '@dfo.global');\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{email}}\",\n  \"ShippingAddress\": {\n    \"FirstName\": \"Postman\",\n    \"MiddleName\": \"Automated\",\n    \"LastName\": \"Testr\",\n    \"Address1\": \"767 5th Ave\",\n    \"Address2\": \"\",\n    \"City\": \"New York\",\n    \"ZipCode\": \"10153\",\n    \"State\": \"NY\",\n    \"CountryCode\": \"US\",\n    \"PhoneNumber\": \"+1 212-336-1440\"\n  },\n  \"useShippingAddressForBilling\": true,\n  \"billingAddress\": null\n}"
+						},
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/shoppingcart/{{webkey-shoppingcart}}/customers/new?sessionId={{sessionId}}",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"shoppingcart",
+								"{{webkey-shoppingcart}}",
+								"customers",
+								"new"
+							],
+							"query": [
+								{
+									"key": "sessionId",
+									"value": "{{sessionId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Shopping Cart checkout using credit card(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Shopping Cart CreditCard]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Shopping Cart CreditCard]Should return success\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.success).to.eql(true);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"behaviorId\": 2,\n  \"fraudSessionId\": \"3da13ac06952450c8fc3fdffe2244384\",\n  \"payment\": {\n    \"name\": \"Postman tester\",\n    \"creditcard\": \"4000000000000010\",\n    \"creditCardBrand\": \"Visa\",\n    \"expiration\": \"01/2024\",\n    \"cvv\": \"123\"\n  },\n  \"sessionId\": \"{{sessionId}}\",\n  \"analyticsV2\": {\n    \"referringUrl\": \"\",\n    \"landingUrl\": \"https://www.dfydaily.com/checkout.html?isCardTest=1\",\n    \"userStringData64\": \"U29mdHdhcmVWZXJzaW9uPTAuMS4xMSZGaW5nZXJwcmludD0xNTQ2Mjc4OCZVc2VyQWdlbnRMb3dlckNhc2U9bW96aWxsYSUyRjUuMCUyMCh3aW5kb3dzJTIwbnQlMjAxMC4wJTNCJTIwd2luNjQlM0IlMjB4NjQpJTIwYXBwbGV3ZWJraXQlMkY1MzcuMzYlMjAoa2h0bWwlMkMlMjBsaWtlJTIwZ2Vja28pJTIwY2hyb21lJTJGODcuMC40MjgwLjY2JTIwc2FmYXJpJTJGNTM3LjM2JkJyb3dzZXI9Q2hyb21lJkJyb3dzZXJWZXJzaW9uPTg3LjAuNDI4MC42NiZFbmdpbmU9V2ViS2l0Jk9TPVdpbmRvd3MmT1NWZXJzaW9uPTEwJkRldmljZT1uJTJGYSZEZXZpY2VUeXBlPW4lMkZhJkRldmljZVZlbmRvcj1uJTJGYSZDUFU9YW1kNjQmaXNNb2JpbGU9biUyRmEmaXNNb2JpbGVNYWpvcj1uJTJGYSZpc01vYmlsZUFuZHJvaWQ9biUyRmEmaXNNb2JpbGVPcGVyYT1uJTJGYSZpc01vYmlsZVdpbmRvd3M9biUyRmEmaXNNb2JpbGVCbGFja0JlcnJ5PW4lMkZhJmlzTW9iaWxlSU9TPW4lMkZhJmlzSXBob25lPW4lMkZhJmlzSXBhZD1uJTJGYSZpc0lwb2Q9biUyRmEmU2NyZWVuUHJpbnQ9Q3VycmVudCUyMFJlc29sdXRpb24lM0ElMjAxOTIweDEwODAlMkMlMjBBdmFpbGFibGUlMjBSZXNvbHV0aW9uJTNBJTIwMTkyMHgxMDQwJTJDJTIwQ29sb3IlMjBEZXB0aCUzQSUyMDI0JTJDJTIwRGV2aWNlJTIwWERQSSUzQSUyMHVuZGVmaW5lZCUyQyUyMERldmljZSUyMFlEUEklM0ElMjB1bmRlZmluZWQmQ29sb3JEZXB0aD0yNCZDdXJyZW50UmVzb2x1dGlvbj0xOTIweDEwODAmQXZhaWxhYmxlUmVzb2x1dGlvbj0xOTIweDEwNDAmRGV2aWNlWERQST1uJTJGYSZEZXZpY2VZRFBJPW4lMkZhJlBsdWdpbnM9Q2hyb21lJTIwUERGJTIwUGx1Z2luJTJDJTIwQ2hyb21lJTIwUERGJTIwVmlld2VyJTJDJTIwTmF0aXZlJTIwQ2xpZW50JmlzSmF2YT1uJTJGYSZKYXZhVmVyc2lvbj1uJTJGYSZpc0ZsYXNoPW4lMkZhJkZsYXNoVmVyc2lvbj1uJTJGYSZpc1NpbHZlcmxpZ2h0PW4lMkZhJlNpbHZlcmxpZ2h0VmVyc2lvbj1uJTJGYSZpc01pbWVUeXBlcz10cnVlJk1pbWVUeXBlcz0lMkMlMjBQb3J0YWJsZSUyMERvY3VtZW50JTIwRm9ybWF0JTJDJTIwTmF0aXZlJTIwQ2xpZW50JTIwRXhlY3V0YWJsZSUyQyUyMFBvcnRhYmxlJTIwTmF0aXZlJTIwQ2xpZW50JTIwRXhlY3V0YWJsZSZGb250cz1BZ2VuY3klMjBGQiUyQyUyMEFyaWFsJTIwQmxhY2slMkMlMjBBcmlhbCUyQyUyMEJhdWhhdXMlMjA5MyUyQyUyMEJlbGwlMjBNVCUyQyUyMEJvZG9uaSUyME1UJTJDJTIwQm9va21hbiUyME9sZCUyMFN0eWxlJTJDJTIwQnJvYWR3YXklMkMlMjBDYWxpYnJpJTIwTGlnaHQlMkMlMjBDYWxpYnJpJTJDJTIwQ2FsaWZvcm5pYW4lMjBGQiUyQyUyMENhbWJyaWElMjBNYXRoJTJDJTIwQ2FtYnJpYSUyQyUyMENhbmRhcmElMkMlMjBDYXN0ZWxsYXIlMkMlMjBDZW50YXVyJTJDJTIwQ2VudHVyeSUyMEdvdGhpYyUyQyUyMENvbG9ubmElMjBNVCUyQyUyMENvbWljJTIwU2FucyUyME1TJTJDJTIwQ29uc29sYXMlMkMlMjBDb25zdGFudGlhJTJDJTIwQ29wcGVycGxhdGUlMjBHb3RoaWMlMjBMaWdodCUyQyUyMENvcmJlbCUyQyUyMENvdXJpZXIlMjBOZXclMkMlMjBFYnJpbWElMkMlMjBFbmdyYXZlcnMlMjBNVCUyQyUyMEZvcnRlJTJDJTIwRnJhbmtsaW4lMjBHb3RoaWMlMjBIZWF2eSUyQyUyMEZyYW5rbGluJTIwR290aGljJTIwTWVkaXVtJTJDJTIwRnJlbmNoJTIwU2NyaXB0JTIwTVQlMkMlMjBHYWJyaW9sYSUyQyUyMEdlb3JnaWElMkMlMjBHaWdpJTJDJTIwR291ZHklMjBPbGQlMjBTdHlsZSUyQyUyMEhhZXR0ZW5zY2h3ZWlsZXIlMkMlMjBIYXJyaW5ndG9uJTJDJTIwSW1wYWN0JTJDJTIwSW5mb3JtYWwlMjBSb21hbiUyQyUyMExlZWxhd2FkZWUlMkMlMjBMdWNpZGElMjBCcmlnaHQlMkMlMjBMdWNpZGElMjBDb25zb2xlJTJDJTIwTHVjaWRhJTIwRmF4JTJDJTIwTHVjaWRhJTIwU2FucyUyMFVuaWNvZGUlMkMlMjBNUyUyMEdvdGhpYyUyQyUyME1TJTIwUEdvdGhpYyUyQyUyME1TJTIwUmVmZXJlbmNlJTIwU2FucyUyMFNlcmlmJTJDJTIwTVMlMjBVSSUyMEdvdGhpYyUyQyUyME1WJTIwQm9saSUyQyUyME1hZ25ldG8lMkMlMjBNYWxndW4lMjBHb3RoaWMlMkMlMjBNYXJsZXR0JTJDJTIwTWF0dXJhJTIwTVQlMjBTY3JpcHQlMjBDYXBpdGFscyUyQyUyME1pY3Jvc29mdCUyMEhpbWFsYXlhJTJDJTIwTWljcm9zb2Z0JTIwSmhlbmdIZWklMkMlMjBNaWNyb3NvZnQlMjBOZXclMjBUYWklMjBMdWUlMkMlMjBNaWNyb3NvZnQlMjBQaGFnc1BhJTJDJTIwTWljcm9zb2Z0JTIwU2FucyUyMFNlcmlmJTJDJTIwTWljcm9zb2Z0JTIwVGFpJTIwTGUlMkMlMjBNaWNyb3NvZnQlMjBVaWdodXIlMkMlMjBNaWNyb3NvZnQlMjBZYUhlaSUyQyUyME1pY3Jvc29mdCUyMFlpJTIwQmFpdGklMkMlMjBNaW5nTGlVLUV4dEIlMkMlMjBNaW5nTGlVX0hLU0NTLUV4dEIlMkMlMjBNb25nb2xpYW4lMjBCYWl0aSUyQyUyME5TaW1TdW4lMkMlMjBOaWFnYXJhJTIwU29saWQlMkMlMjBQTWluZ0xpVS1FeHRCJTJDJTIwUGFsYWNlJTIwU2NyaXB0JTIwTVQlMkMlMjBQYWxhdGlubyUyMExpbm90eXBlJTJDJTIwUGFweXJ1cyUyQyUyMFBlcnBldHVhJTJDJTIwUGxheWJpbGwlMkMlMjBSb2Nrd2VsbCUyQyUyMFNlZ29lJTIwUHJpbnQlMkMlMjBTZWdvZSUyMFNjcmlwdCUyQyUyMFNlZ29lJTIwVUklMjBMaWdodCUyQyUyMFNlZ29lJTIwVUklMjBTZW1pYm9sZCUyQyUyMFNlZ29lJTIwVUklMjBTeW1ib2wlMkMlMjBTZWdvZSUyMFVJJTJDJTIwU2hvd2NhcmQlMjBHb3RoaWMlMkMlMjBTaW1TdW4lMkMlMjBTaW1TdW4tRXh0QiUyQyUyMFNuYXAlMjBJVEMlMkMlMjBTeWxmYWVuJTJDJTIwU3ltYm9sJTJDJTIwVGFob21hJTJDJTIwVGltZXMlMjBOZXclMjBSb21hbiUyQyUyMFRyZWJ1Y2hldCUyME1TJTJDJTIwVmVyZGFuYSUyQyUyMFZsYWRpbWlyJTIwU2NyaXB0JTJDJTIwV2ViZGluZ3MlMkMlMjBXaWRlJTIwTGF0aW4lMkMlMjBXaW5nZGluZ3MmaXNMb2NhbFN0b3JhZ2U9dHJ1ZSZpc1Nlc3Npb25TdG9yYWdlPXRydWUmaXNDb29raWU9dHJ1ZSZUaW1lWm9uZT1Ib3IlQzMlQTFyaW8lMjBQYWRyJUMzJUEzbyUyMGRlJTIwQnJhcyVDMyVBRGxpYSZMYW5ndWFnZT1wdC1CUiZTeXN0ZW1MYW5ndWFnZT1uJTJGYSZpc0NhbnZhcz10cnVlJkN1c3RvbUZpbmdlcnByaW50PTIwMjQ1MjEzNzA=\"\n  }\n}"
+						},
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/shoppingcart/{{webkey-shoppingcart}}/checkout",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"shoppingcart",
+								"{{webkey-shoppingcart}}",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Requests",
+			"item": [
+				{
+					"name": "Get Latest Orders(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[latest orders needs to be an array]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"latest orders needs to be an array\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"// it works only for real orders\r",
+									"// pm.test(\"Should have orders\", function () {\r",
+									"//     const responseJson = pm.response.json();\r",
+									"//     pm.expect(Object.keys(responseJson).length).to.greaterThan(0);\r",
+									"// });\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/orders/latestorders/{{webkey}}",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"orders",
+								"latestorders",
+								"{{webkey}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Related Orders(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Related orders needs to be an array]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Related orders needs to be an array\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.relatedOrders).to.be.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/orders/{{orderNumber}}/relatedorders",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"orders",
+								"{{orderNumber}}",
+								"relatedorders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer Orders(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Customer orders needs to be an array]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Customer orders needs to be an array\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.orders).to.be.an(\"array\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/orders/{{webkey}}/customerorders?email={{email}}",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"orders",
+								"{{webkey}}",
+								"customerorders"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Calculate Upgrade Product(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Calculate upgrade product]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Calculate upgrade product\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.totalAmount).greaterThan(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/orders/{{orderNumber}}/{{upgrade-productId}}/calculate",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"orders",
+								"{{orderNumber}}",
+								"{{upgrade-productId}}",
+								"calculate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order Status(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Needs to return an order Status]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Needs to return an order Status\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.orderStatus).not.equal(null);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/orders/{{orderNumber}}/status",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"orders",
+								"{{orderNumber}}",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Prices(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Get Prices]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Get Prices]Needs to return get prices\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.prices).to.be.an(\"array\");\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/campaigns/{{webkey}}/products/prices",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{webkey}}",
+								"products",
+								"prices"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Campaign Settings(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[campaign settings needs to be an array]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"campaign settings needs to be an array\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(Object.keys(responseJson).length).to.greaterThan(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/campaigns/{{webkey}}/settings",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{webkey}}",
+								"settings"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Mid by processor(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Mid available for processor]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Mid available for processor\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(Object.keys(responseJson).length).to.greaterThan(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/campaigns/{{webkey}}/54/mid?isTest=true",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{webkey}}",
+								"54",
+								"mid"
+							],
+							"query": [
+								{
+									"key": "isTest",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Campaign upsells(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Get Campaign upsells]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get Campaign upsells\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(Object.keys(responseJson).length).to.greaterThan(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/campaigns/{{webkey}}/upsells",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{webkey}}",
+								"upsells"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Campaign taxes(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Get Campaign Taxes]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get Campaign Taxes\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(Object.keys(responseJson).length).to.greaterThan(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/campaigns/{{webkey}}/taxes/US/FL",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"campaigns",
+								"{{webkey}}",
+								"taxes",
+								"US",
+								"FL"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Customer info by email(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Get Campaign Taxes]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get Campaign Taxes by email\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(Object.keys(responseJson).length).to.greaterThan(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/customers?email={{email}}",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"customers"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "{{email}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Status of transaction(old websales)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Get Status of payment transaction]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Get Status of payment transaction\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(Object.keys(responseJson).length).to.greaterThan(0);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://emanage-dev-websales-api.azurewebsites.net/api/payments/transactions/{{orderNumber}}",
+							"protocol": "https",
+							"host": [
+								"emanage-dev-websales-api",
+								"azurewebsites",
+								"net"
+							],
+							"path": [
+								"api",
+								"payments",
+								"transactions",
+								"{{orderNumber}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Credit card info",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"[Get Credit Card info]Status Response\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"[Get  Credit Card info]Needs to return some info\", function () {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.cardId).not.equal(null);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "X_CID",
+								"value": "{{X_CID}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host-websales}}creditcards/info?email=postman-user-16@dfo.global",
+							"host": [
+								"{{host-websales}}creditcards"
+							],
+							"path": [
+								"info"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "postman-user-16@dfo.global"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "orderNumber",
+			"value": ""
+		},
+		{
+			"key": "cardId",
+			"value": ""
+		},
+		{
+			"key": "trackingNumber",
+			"value": ""
+		},
+		{
+			"key": "sessionId",
+			"value": ""
+		}
+	]
+}
